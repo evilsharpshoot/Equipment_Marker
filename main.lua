@@ -19,8 +19,8 @@ end)
 
 function Mark(self)
 	for i=1,self.size do
-		local button=_G[self:GetName().."Item"..i]
-		local slot = button:GetID()
+		button=_G[self:GetName().."Item"..i]
+		slot = button:GetID()
 		itemId = GetContainerItemLink(self:GetID(), slot)
 		id = GetContainerItemID(self:GetID(),slot)
 		id = tostring(id)
@@ -42,7 +42,7 @@ function getMarked()
 	count = C_EquipmentSet.GetNumEquipmentSets();
 	for i = 0,count-1,1 do
 		name, texture = C_EquipmentSet.GetEquipmentSetInfo(i)
-		local itemIDs = C_EquipmentSet.GetItemIDs(i)
+		itemIDs = C_EquipmentSet.GetItemIDs(i)
 		for i=1, 19 do
 		  if itemIDs[i] then
 			ids[tostring(itemIDs[i])] = itemIDs[i];
