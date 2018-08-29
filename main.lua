@@ -1,39 +1,53 @@
-hooksecurefunc("ContainerFrame_Update",function(self)
-  for i=1,self.size do
-    
-	local button=_G[self:GetName().."Item"..i]
-    local slot = button:GetID()
-	
-	itemId = GetContainerItemLink(self:GetID(), slot)
-	
-	ids ,icons = getMarked();
-	
-	id = GetContainerItemID(self:GetID(),slot)
-	id = tostring(id)
+eventSet = false
+ids = {}
+icons = {}
 
-	if ids[id] then
-		if button then
-		  button:SetHighlightTexture(icons[id])
-		  button.IconBorder:SetVertexColor(1,0,0)
-		end
+hooksecurefunc("ContainerFrame_Update",function(self)
+	if not eventSet then
+		getMarked()
+		eventSet = true;
 	end
-	
-  end
+	Mark(self)
 end)
 
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("EQUIPMENT_SETS_CHANGED")
+frame:SetScript("OnEvent", function(self, event, ...)getMarked()
+CloseAllBags() 
+OpenAllBags()
+end)
+
+function Mark(self)
+	for i=1,self.size do
+		local button=_G[self:GetName().."Item"..i]
+		local slot = button:GetID()
+		itemId = GetContainerItemLink(self:GetID(), slot)
+		id = GetContainerItemID(self:GetID(),slot)
+		id = tostring(id)
+		
+		if ids[id] then
+			if button then
+			  button:SetHighlightTexture(icons[id])
+			  button.IconBorder:SetVertexColor(1,0,0)
+			end
+		else
+			button:SetHighlightTexture('Interface\\Buttons\\ButtonHilight-Square')
+		end
+	end
+end
+
 function getMarked()
-	mark = {}
-	icon = {} 
+	ids = {}
+	icons = {}
 	count = C_EquipmentSet.GetNumEquipmentSets();
 	for i = 0,count-1,1 do
-		name, texture  = C_EquipmentSet.GetEquipmentSetInfo(i)
+		name, texture = C_EquipmentSet.GetEquipmentSetInfo(i)
 		local itemIDs = C_EquipmentSet.GetItemIDs(i)
 		for i=1, 19 do
 		  if itemIDs[i] then
-			mark[tostring(itemIDs[i])] = itemIDs[i];
-			icon[tostring(itemIDs[i])] = texture;
+			ids[tostring(itemIDs[i])] = itemIDs[i];
+			icons[tostring(itemIDs[i])] = texture;
 		  end
 		end
 	end
-	return mark, icon;
 end
